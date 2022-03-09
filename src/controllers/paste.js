@@ -70,20 +70,29 @@ const postCreateNewPaste = async(req, res, next) => {
     }
 }
 
+// poistetaan paste
 const deletePaste = async(req, res, next) => {
+    //jos vaadittu parametri puuttuu, antaa ilmoituksen error status 400 - Bad Request error
     if (!req.params.id) return res.status(400).send();
     try {
+        // Tallennetaan Paste instanssin id:n perusteella haettuun yksittäiseen dokumenttiin
         const paste = await Paste.findById(req.params.id);
+        // Jos tietokanta ei anna vastausta niin toiminto on epäonnistunut
+        // ja lähetetään error status 404 - not found
         if (!paste) return res.status(404).send();
+        //kertoo että paste poistetaan
         await paste.delete();
 
+        // ilmoittaa onnistuneesta poistosta
         next("Poisto onnistui")
 
     } catch (e) {
+        // Jos ohjelma kaatuu niin lähetetään error middlewaren käsiteltäväksi
         next(e);
     }
 }
 
+// export individual features as default
 export default {
     getPaste,
     getAllPastes,
